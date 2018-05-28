@@ -21,7 +21,7 @@ class DiscordUser:
         """Check if a discord user has a certain character. """
         return self.characters.__contains__(WoWCharacter(region, realm, name))
 
-    def compare_characters(self, character_list, otherway):
+    def compare_characters(self, character_list, otherway=False):
         """Gives the characters that are not in the given list"""
         if otherway:
             return list(set(character_list) - set(self.characters))
@@ -87,8 +87,8 @@ class DiscordUser:
                 if 'Item' in response_entry and 'json' in response_entry['Item'] and 'characters' in \
                         response_entry['Item'][
                             'json']:
-                    jsonEntry = response_entry['Item']['json']['characters']
-                    for character in jsonEntry:
+                    json_entry = response_entry['Item']['json']['characters']
+                    for character in json_entry:
                         if 'guild' in character and 'mainCharacterForGuild' in character:
                             self.characters.append(
                                 WoWCharacter(character['region'], character['realm'], character['name'],

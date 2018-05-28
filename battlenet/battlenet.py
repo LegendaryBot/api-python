@@ -59,7 +59,7 @@ def get_battlnet_oauth_callback(event,context):
     code = event['queryStringParameters']['code']
 
     state = event['queryStringParameters']['state']
-    region, id = state.split(":")[0]
+    region, user_id = state.split(":")[0]
     scope = ["wow.profile"]
     redirect_uri = "https://api-dev.legendarybot.info/v2/oauth/battlenetcallback"
     oauth = OAuth2Session(os.getenv("US_KEY"), redirect_uri=redirect_uri, scope=scope)
@@ -73,6 +73,6 @@ def get_battlnet_oauth_callback(event,context):
                 character_array.append(WoWCharacter(region, character['realm'].lower(),character['name'], character['guild']))
             else:
                 character_array.append(WoWCharacter(region, character['realm'].lower(),character['name']))
-    du = DiscordUser(id)
+    du = DiscordUser(user_id)
     for character in du.compare_characters(character_array):
         du.remove_character(character)
