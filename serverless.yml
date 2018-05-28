@@ -24,7 +24,9 @@ provider:
   name: aws
   runtime: python3.6
   memorySize: 192
-  stage: master
+  stage: ${env:TRAVIS_BRANCH}
+  apiKeys:
+    - LegendaryBot-${self:provider.stage}
   environment:
     DYNAMODB_TABLE_ITEM: LegendaryBot_item-${self:provider.stage}
     DYNAMODB_TABLE_DISCORD_USER: LegendaryBot_discordUser-${self:provider.stage}
@@ -107,18 +109,21 @@ functions:
       - http:
           path: /guild/{guildId}/setting/{key}
           method: get
+          private: true
   set-guild-setting:
     handler: aws/guild_setting.set_setting
     events:
       - http:
           path: /guild/{guildId}/setting/{key}
           method: post
+          private: true
   remove-guild-setting:
     handler: aws/guild_setting.remove_setting
     events:
       - http:
           path: /guild/{guildId}/setting/{key}
           method: delete
+          private: true
   get-realm-status:
     handler: wow/wow_realm.get_realm_status
     events:
@@ -218,9 +223,12 @@ plugins:
   - serverless-domain-manager
 
 custom:
+  domains:
+    prod: api.legendarybot.info
+    master: api-dev.legendarybot.info
   pythonRequirements:
     pythonBin: python
   customDomain:
-    domainName: api-dev.legendarybot.info
+    domainName: ${self:custom.domains.${self:provider.stage}}
     basePath: v2
     createRoute53Record: false
