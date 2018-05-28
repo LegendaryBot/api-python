@@ -7,11 +7,10 @@ from discord.colour import Colour
 
 
 def get_token_price(event, context):
-    region = event['pathParameters']['region']
+    region = event['pathParameters']['region'].upper()
     region = "NA" if region.casefold() == "US".casefold() else region
     r = requests.get("https://data.wowtoken.info/snapshot.json")
     jsonEntry = r.json()
-    print(jsonEntry)
     if region in jsonEntry:
         region_json = jsonEntry[region]['formatted']
         embed = {
