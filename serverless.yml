@@ -1,0 +1,226 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: legendarybotapi-python3
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+package:
+  exclude:
+    - venv/**
+    - node_modules/**
+provider:
+  name: aws
+  runtime: python3.6
+  memorySize: 192
+  stage: master
+  environment:
+    DYNAMODB_TABLE_ITEM: LegendaryBot_item-${self:provider.stage}
+    DYNAMODB_TABLE_DISCORD_USER: LegendaryBot_discordUser-${self:provider.stage}
+    DYNAMODB_TABLE_DISCORD_GUILD: LegendaryBot_discordGuild-${self:provider.stage}
+    DYNAMODB_TABLE_LEGENDARYCHECK: LegendaryBot_characterslc-${self:provider.stage}
+    US_KEY: ${env:US_KEY_${self:provider.stage}}
+    US_SECRET: ${env:US_SECRET_${self:provider.stage}}
+    WARCRAFTLOGS_KEY: ${env:WARCRAFTLOGS_KEY}
+    TWITTER_CONSUMER_KEY: ${env:TWITTER_CONSUMER_KEY}
+    TWITTER_CONSUMER_SECRET: ${env:TWITTER_CONSUMER_SECRET}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cloudwatch:PutMetricData
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_ITEM}"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_DISCORD_USER}"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_DISCORD_GUILD}"
+# you can overwrite defaults here
+#  stage: dev
+#  region: us-east-1
+
+# you can add statements to the Lambda function's IAM Role here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+# you can define service wide environment variables here
+#  environment:
+#    variable1: value1
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.py
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.py
+#    - exclude-me-dir/**
+
+functions:
+  get-guild-setting:
+    handler: aws/guild_setting.get_setting
+    events:
+      - http:
+          path: /guild/{guildId}/setting/{key}
+          method: get
+  set-guild-setting:
+    handler: aws/guild_setting.set_setting
+    events:
+      - http:
+          path: /guild/{guildId}/setting/{key}
+          method: post
+  remove-guild-setting:
+    handler: aws/guild_setting.remove_setting
+    events:
+      - http:
+          path: /guild/{guildId}/setting/{key}
+          method: delete
+  get-realm-status:
+    handler: wow/wow_realm.get_realm_status
+    events:
+      - http:
+          path: /server/{region}/{realm}/status
+          method: get
+  get-guild-latest-log:
+    handler: guild/guild_util.get_guild_latest_log
+    events:
+      - http:
+          path: /guild/{guildId}/getLatestLog
+          method: get
+  get-token-region-price:
+    handler: wow/wow_region.get_token_price
+    events:
+      - http:
+          path: /region/{region}/wowtoken
+          method: get
+  get-overwatch-stats:
+    handler: overwatch/overwatch.get_overwatch_stats
+    events:
+      - http:
+          path: /overwatch/{region}/{battletag}
+          method: get
+  get-auth-battlenet:
+    handler: battlenet/battlenet.get_battlenet_oauth_login
+    events:
+      - http:
+          path: /oauth/login/{region}/{id}
+          method: get
+  get-auth-battlenet-callback:
+    handler: battlenet/battlenet.get_battlnet_oauth_callback
+    timeout: 15
+    events:
+      - http:
+          path: /oauth/battlenetcallback
+          method: get
+  get-blizzardcs-twitter:
+    handler: utils/twitter_util.get_blizzardcs_last_tweet
+    events:
+      - http:
+          path: /twitter/{region}
+          method: get
+  get-legion-building:
+    handler: wow/wow_region.get_legion_building
+    events:
+      - http:
+          path: /region/{region}/legionbuilding
+          method: get
+#    The following are a few example events you can configure
+#    NOTE: Please make sure to change your handler code to work with those events
+#    Check the event documentation for details
+#    events:
+#      - http:
+#          path: users/create
+#          method: get
+#      - s3: ${env:BUCKET}
+#      - schedule: rate(10 minutes)
+#      - sns: greeter-topic
+#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
+#      - alexaSkill
+#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
+#      - iot:
+#          sql: "SELECT * FROM 'some_topic'"
+#      - cloudwatchEvent:
+#          event:
+#            source:
+#              - "aws.ec2"
+#            detail-type:
+#              - "EC2 Instance State-change Notification"
+#            detail:
+#              state:
+#                - pending
+#      - cloudwatchLog: '/aws/lambda/hello'
+#      - cognitoUserPool:
+#          pool: MyUserPool
+#          trigger: PreSignUp
+
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
+
+plugins:
+  - serverless-python-requirements
+  - serverless-domain-manager
+
+custom:
+  pythonRequirements:
+    pythonBin: python
+  customDomain:
+    domainName: api-dev.legendarybot.info
+    basePath: v2
+    createRoute53Record: false

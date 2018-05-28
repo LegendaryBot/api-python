@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.6"
+install: true
+script:
+  - npm install serverless -g
+  - npm install serverless-domain-manager --save-dev
+  - serverless create_domain
+  - serverless deploy --conceal
