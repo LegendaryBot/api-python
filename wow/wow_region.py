@@ -87,32 +87,32 @@ def get_legion_building(event, context):
                 }
             ]
         }
-        if states[0] == "Completed":
+        if states[0].text == "Completed":
             embed["color"] = Colour.green().value
             embed['image'] = {
                 "url": status[0].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[1] == "Completed":
+        elif states[1].text == "Completed":
             embed["color"] = Colour.green().value
             embed['image'] = {
                 "url": status[1].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[2] == "Completed":
+        elif states[2].text == "Completed":
             embed["color"] = Colour.green().value
             embed['image'] = {
                 "url": status[2].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[0] == "Under Attack":
+        elif states[0].text == "Under Attack":
             embed["color"] = Colour.from_rgb(255, 255, 0).value
             embed['image'] = {
                 "url": status[0].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[1] == "Under Attack":
+        elif states[1].text == "Under Attack":
             embed["color"] = Colour.from_rgb(255, 255, 0).value
             embed['image'] = {
                 "url": status[1].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[2] == "Under Attack":
+        elif states[2].text == "Under Attack":
             embed["color"] = Colour.from_rgb(255, 255, 0).value
             embed['image'] = {
                 "url": status[2].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
@@ -143,32 +143,32 @@ def get_legion_building(event, context):
                 }
             ]
         }
-        if states[3] == "Completed":
+        if states[3].text == "Completed":
             embed["color"] = Colour.green().value
             embed['image'] = {
                 "url": status[3].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[4] == "Completed":
+        elif states[4].text == "Completed":
             embed["color"] = Colour.green().value
             embed['image'] = {
                 "url": status[4].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[5] == "Completed":
+        elif states[5].text == "Completed":
             embed["color"] = Colour.green().value
             embed['image'] = {
                 "url": status[5].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[3] == "Under Attack":
+        elif states[3].text == "Under Attack":
             embed["color"] = Colour.from_rgb(255, 255, 0).value
             embed['image'] = {
                 "url": status[3].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[4] == "Under Attack":
+        elif states[4].text == "Under Attack":
             embed["color"] = Colour.from_rgb(255, 255, 0).value
             embed['image'] = {
                 "url": status[4].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
             }
-        elif states[5] == "Under Attack":
+        elif states[5].text == "Under Attack":
             embed["color"] = Colour.from_rgb(255, 255, 0).value
             embed['image'] = {
                 "url": status[5].attrs['style'].split("(")[1].split(")")[0].replace("//", "https://")
