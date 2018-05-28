@@ -4,5 +4,6 @@ python:
 install: true
 script:
   - npm install
+  - npm install serverless -g
   - serverless create_domain
   - serverless deploy --conceal
