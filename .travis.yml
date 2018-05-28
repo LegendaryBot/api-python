@@ -2,7 +2,7 @@ language: python
 python:
   - "3.6"
 script:
-  - python -m pytest --cov-report xml:coverage.xml
+  - python -m pytest --cov=aws --cov=battlenet --cov=discord --cov=guild --cov=overwatch --cov=utils --cov=wow --cov-report xml:coverage.xml
 after_success:
   - python-codacy-coverage -r coverage.xml
   - npm install
