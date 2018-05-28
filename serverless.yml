@@ -26,7 +26,7 @@ provider:
   memorySize: 192
   stage: ${env:TRAVIS_BRANCH}
   apiKeys:
-    - LegendaryBot-${self:provider.stage}
+    - LegendaryBot-python-${self:provider.stage}
   environment:
     DYNAMODB_TABLE_ITEM: LegendaryBot_item-${self:provider.stage}
     DYNAMODB_TABLE_DISCORD_USER: LegendaryBot_discordUser-${self:provider.stage}
