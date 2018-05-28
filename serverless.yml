@@ -173,6 +173,12 @@ functions:
       - http:
           path: /region/{region}/legionbuilding
           method: get
+  get-guild-raid-ranking:
+    handler: guild/guild_util.get_guild_raid_rank
+    events:
+      - http:
+          path: /guild/{guildId}/rank
+          method: get
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

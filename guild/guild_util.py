@@ -62,3 +62,84 @@ def get_guild_latest_log(event, context):
                 "body": json.dumps(embed)
             }
             return response
+
+
+def get_guild_raid_rank(event,context):
+    guild_id = event['pathParameters']['guildId']
+    region = gs.get_setting(guild_id, "WOW_REGION_NAME")
+    server = gs.get_setting(guild_id, "WOW_SERVER_NAME")
+    guild = gs.get_setting(guild_id, "GUILD_NAME")
+    queryParameters = {
+        "region": region,
+        "realm": server,
+        "name": guild,
+        "fields": "raid_rankings"
+    }
+    r = requests.get("https://raider.io/api/v1/guilds/profiles", queryParameters)
+    json_entry = r.json()
+    if "error" not in json_entry:
+            raid_rankings = json_entry['raid_rankings']
+            embed = {
+                "title": "%s-%s Raid Rankings" % (guild, server),
+                "fields": [
+                    {
+                        "name": "Antorus The Burning Throne",
+                        "value": __format_ranking(raid_rankings['antorus-the-burning-throne']),
+                        "inline": True
+                    },
+                    {
+                        "name": "Tomb of Sargeras",
+                        "value": __format_ranking(raid_rankings['tomb-of-sargeras']),
+                        "inline": True
+                    },
+                    {
+                        "name": "The Nighthold",
+                        "value": __format_ranking(raid_rankings['the-nighthold']),
+                        "inline": True
+                    },
+                    {
+                        "name": "Trial of Valor",
+                        "value": __format_ranking(raid_rankings['trial-of-valor']),
+                        "inline": True
+                    },
+                    {
+                        "name": "The Emerald Nightmare",
+                        "value": __format_ranking(raid_rankings['the-emerald-nightmare']),
+                        "inline": True
+                    }
+                ]
+            }
+            return {
+                "statusCode": 200,
+                "body": json.dumps(embed)
+            }
+    return {
+        "statusCode": 404
+    }
+
+
+def __format_ranking(raid_json):
+    return_string = ""
+    normal = raid_json['normal']
+    heroic = raid_json['heroic']
+    mythic = raid_json['mythic']
+    if normal['world'] != 0 and heroic['world'] == 0 and mythic['world'] == 0:
+        return_string += "**Normal**\n"
+        __sub_format_ranking(return_string, normal)
+    elif heroic['world'] != 0 and mythic['world'] == 0:
+        return_string += "\n**Heroic**\n"
+        __sub_format_ranking(return_string, heroic)
+    elif mythic['world'] != 0:
+        return_string += "\n**Mythic**\n"
+        __sub_format_ranking(return_string, mythic)
+    else:
+        __sub_format_ranking(return_string, None)
+
+
+def __sub_format_ranking(ranking, difficulty):
+    if difficulty is not None:
+        ranking += "World: **%s**\n" % difficulty['world']
+        ranking += "Region: **%s**\n" % difficulty['region']
+        ranking += "Realm: **%s**\n" % difficulty['realm']
+    else:
+        ranking += "**Not started**\n"
