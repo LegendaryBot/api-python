@@ -70,12 +70,12 @@ def get_guild_raid_rank(event,context):
     server = gs.get_setting(guild_id, "WOW_SERVER_NAME")
     guild = gs.get_setting(guild_id, "GUILD_NAME")
     queryParameters = {
-        "region": region,
-        "realm": server,
-        "name": guild,
+        "region": region['body']['value'],
+        "realm": server['body']['value'],
+        "name": guild['body']['value'],
         "fields": "raid_rankings"
     }
-    r = requests.get("https://raider.io/api/v1/guilds/profiles", queryParameters)
+    r = requests.get("https://raider.io/api/v1/guilds/profile", queryParameters)
     json_entry = r.json()
     if "error" not in json_entry:
             raid_rankings = json_entry['raid_rankings']
