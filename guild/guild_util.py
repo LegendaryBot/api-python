@@ -69,18 +69,18 @@ def get_guild_raid_rank(event,context):
     region = gs.get_setting(guild_id, "WOW_REGION_NAME")
     server = gs.get_setting(guild_id, "WOW_SERVER_NAME")
     guild = gs.get_setting(guild_id, "GUILD_NAME")
-    queryParameters = {
+    query_parameters = {
         "region": region['body']['value'],
         "realm": server['body']['value'],
         "name": guild['body']['value'],
         "fields": "raid_rankings"
     }
-    r = requests.get("https://raider.io/api/v1/guilds/profile", queryParameters)
+    r = requests.get("https://raider.io/api/v1/guilds/profile", query_parameters)
     json_entry = r.json()
     if "error" not in json_entry:
             raid_rankings = json_entry['raid_rankings']
             embed = {
-                "title": "%s-%s Raid Rankings" % (guild, server),
+                "title": "%s-%s Raid Rankings" % (query_parameters['name'], query_parameters['realm']),
                 "fields": [
                     {
                         "name": "Antorus The Burning Throne",
@@ -125,21 +125,23 @@ def __format_ranking(raid_json):
     mythic = raid_json['mythic']
     if normal['world'] != 0 and heroic['world'] == 0 and mythic['world'] == 0:
         return_string += "**Normal**\n"
-        __sub_format_ranking(return_string, normal)
+        return_string += __sub_format_ranking(normal)
     elif heroic['world'] != 0 and mythic['world'] == 0:
         return_string += "\n**Heroic**\n"
-        __sub_format_ranking(return_string, heroic)
+        return_string += __sub_format_ranking(heroic)
     elif mythic['world'] != 0:
         return_string += "\n**Mythic**\n"
-        __sub_format_ranking(return_string, mythic)
+        return_string += __sub_format_ranking(mythic)
     else:
-        __sub_format_ranking(return_string, None)
+        return_string += __sub_format_ranking(None)
+    return return_string
 
 
-def __sub_format_ranking(ranking, difficulty):
+def __sub_format_ranking(difficulty):
     if difficulty is not None:
-        ranking += "World: **%s**\n" % difficulty['world']
+        ranking = "World: **%s**\n" % difficulty['world']
         ranking += "Region: **%s**\n" % difficulty['region']
         ranking += "Realm: **%s**\n" % difficulty['realm']
     else:
-        ranking += "**Not started**\n"
+        ranking = "**Not started**\n"
+    return ranking
