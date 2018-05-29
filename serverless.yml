@@ -146,7 +146,7 @@ functions:
     handler: overwatch/overwatch.get_overwatch_stats
     events:
       - http:
-          path: /overwatch/{region}/{battletag}
+          path: /overwatch/{battletag}
           method: get
   get-auth-battlenet:
     handler: battlenet/battlenet.get_battlenet_oauth_login
