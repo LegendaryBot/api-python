@@ -179,6 +179,13 @@ functions:
       - http:
           path: /guild/{guildId}/rank
           method: get
+  add-stats-point:
+    handler: aws/aws_stats.add_point
+    events:
+      - http:
+          path: /stats
+          method: post
+          private: true
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
