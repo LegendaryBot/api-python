@@ -55,7 +55,7 @@ def get_battlenet_oauth_login(event, context):
     }
 
 
-def get_battlnet_oauth_callback(event,context):
+def get_battlnet_oauth_callback(event, context):
     code = event['queryStringParameters']['code']
 
     state = event['queryStringParameters']['state']
@@ -76,3 +76,7 @@ def get_battlnet_oauth_callback(event,context):
     du = DiscordUser(user_id)
     for character in du.compare_characters(character_array):
         du.remove_character(character)
+
+    for character in du.compare_characters(character_array, otherway=True):
+        du.add_character(character)
+    du.save()

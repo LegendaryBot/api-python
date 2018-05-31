@@ -19,7 +19,7 @@ class DiscordUser:
 
     def has_character(self, region, realm, name):
         """Check if a discord user has a certain character. """
-        return self.characters.__contains__(WoWCharacter(region, realm, name))
+        return WoWCharacter(region, realm, name) in self.characters
 
     def compare_characters(self, character_list, otherway=False):
         """Gives the characters that are not in the given list"""
@@ -43,7 +43,11 @@ class DiscordUser:
     def add_character(self, character):
         if not isinstance(character, WoWCharacter):
             raise TypeError('Expected WoWCharacter parameter, received %s instead.' % character.__class__.__name__)
-        self.characters.append(character)
+        if self.has_character(character.region, character.realm, character.name):
+            character_saved = self.characters.index(character)
+            character_saved.guild = character.guild
+        else:
+            self.characters.append(character)
 
     def save(self):
         json_entry = {
